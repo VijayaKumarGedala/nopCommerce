@@ -5,11 +5,11 @@ pool:
 trigger: none
 
 steps:
-  - task: SonarCloudPrepare@3
-    inputs:
-      SonarCloud: SONAR_CLOUD
-      scannerMode: other
-      organization: dev.azure.com/vijaysiri048
+  # - task: SonarCloudPrepare@3
+  #   inputs:
+  #     SonarCloud: SONAR_CLOUD
+  #     scannerMode: other
+  #     organization: dev.azure.com/vijaysiri048
 
   - task: DotNetCoreCLI@2  
     inputs:
@@ -40,6 +40,6 @@ steps:
       pathToPublish: '$(Build.ArtifactStagingDirectory)'
       artifactName: 'drop'
   
-  - task: SonarCloudPublish@3
-    inputs:
-      pollingTimeoutSec: '300'
+  # - task: SonarCloudPublish@3
+  #   inputs:
+  #     pollingTimeoutSec: '300'
