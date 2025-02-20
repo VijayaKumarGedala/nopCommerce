@@ -1,34 +1,47 @@
----
 pool:
   vmImage: ubuntu-latest
 
 trigger: none
 
 steps:
-  # - task: SonarCloudPrepare@3
-  #   inputs:
-  #     SonarCloud: SONAR_CLOUD
-  #     scannerMode: other
-  #     organization: dev.azure.com/vijaysiri048
   - task: DotNetCoreCLI@2
     displayName: Clean
     inputs:
       command: 'clean'
       projects: '**/*.csproj'
 
-  - task: DotNetCoreCLI@2  
+  - task: DotNetCoreCLI@2
     displayName: Restore
     inputs:
       command: 'restore'
       projects: '**/*.csproj'
- 
+
   - task: DotNetCoreCLI@2  
     displayName: Build plugins
     inputs:
-      command: 'restore'
+      command: 'build' 
       projects: './src/plugins/**/*.csproj'
 
-  - task: DotNetCoreCLI@2 
+  - task: Bash@3
+    displayName: 'Set Permissions'
+    inputs:
+      targetType: 'inline'
+      script: |
+        sudo mkdir -p /Presentation/Nop.Web/Plugins/DiscountRules.CustomerRoles
+        sudo chown -R $(whoami) /Presentation
+        sudo chmod -R 777 /Presentation
+
+  - task: Bash@3
+    displayName: 'Check for Conflicting Files'
+    inputs:
+      targetType: 'inline'
+    script: |
+      if [ -f "/Presentation" ]; then
+        echo "A file named 'Presentation' exists. Removing it."
+        sudo rm /Presentation
+      fi
+
+  - task: DotNetCoreCLI@2
     displayName: Build
     inputs:
       command: 'build'
@@ -55,7 +68,3 @@ steps:
     inputs:
       pathToPublish: '$(Build.ArtifactStagingDirectory)'
       artifactName: 'drop'
-  
-  # - task: SonarCloudPublish@3
-  #   inputs:
-  #     pollingTimeoutSec: '300'
