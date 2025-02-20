@@ -26,7 +26,7 @@ steps:
     displayName: Build plugins
     inputs:
       command: 'restore'
-      projects: './src/plugins'
+      projects: './src/plugins/**/*.csproj'
 
   - task: DotNetCoreCLI@2 
     displayName: Build
