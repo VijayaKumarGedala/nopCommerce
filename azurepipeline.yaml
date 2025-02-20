@@ -17,36 +17,11 @@ steps:
       projects: '**/*.csproj'
 
   - task: DotNetCoreCLI@2  
-    displayName: Build plugins
-    inputs:
-      command: 'build' 
-      projects: './src/plugins/**/*.csproj'
-
-  - task: Bash@3
-    displayName: 'Set Permissions'
-    inputs:
-      targetType: 'inline'
-      script: |
-        sudo mkdir -p /Presentation/Nop.Web/Plugins/DiscountRules.CustomerRoles
-        sudo chown -R $(whoami) /Presentation
-        sudo chmod -R 777 /Presentation
-
-  - task: Bash@3
-    displayName: 'Check for Conflicting Files'
-    inputs:
-      targetType: 'inline'
-    script: |
-      if [ -f "/Presentation" ]; then
-        echo "A file named 'Presentation' exists. Removing it."
-        sudo rm /Presentation
-      fi
-
-  - task: DotNetCoreCLI@2
-    displayName: Build
+    displayName: Build All Projects
     inputs:
       command: 'build'
       projects: '**/*.csproj'
-      arguments: '--configuration Release'
+      arguments: '--configuration Release --no-restore'
 
   - task: DotNetCoreCLI@2  
     displayName: Test
